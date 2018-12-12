@@ -253,11 +253,17 @@ In this exercise, you will create an experiment in which you will train a Classi
 
 12. In order to prevent the **class bias** to non-fraudulent claims, add the **SMOTE** module to the canvas and connect its _input port_ to the _output port_ of the previously added module. Configure it to use _All labels_ as **selected columns** and a value of _1450_ for **SMOTE Percentage**. Do define a **random seed** different from _0_ so that multiple runs will start from the same scenario.
 
-**SMOTE** stands for _Synthetic Minority Oversampling Technique_. This is a statistical technique for increasing the number of cases in your dataset in a balanced way. The module works by generating new instances from existing minority cases that you supply as input. This implementation of SMOTE does not change the number of majority cases.
+* _Note_: **SMOTE** stands for _Synthetic Minority Oversampling Technique_. This is a statistical technique for increasing the number of cases in your dataset in a balanced way. The module works by generating new instances from existing minority cases that you supply as input. This implementation of SMOTE does not change the number of majority cases.
 
-	![SMOTE Module Configuration](images/click-visualize.PNG)
-	
-    _SMOTE Module Configuration_
+	![SMOTE Module Configuration](images/smote-config.PNG)
+
+    _**SMOTE** Module Configuration_
+
+13. After running the experiment with the fresh new **SMOTE** Module added to the canvas, we can tell that the classes are now balanced are ready for training.
+
+	![Class distribution after SMOTE](images/balanced-classes.PNG)
+
+    _Class distribution after **SMOTE**_
 
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
