@@ -421,7 +421,17 @@ _Note_: This operation needs to be done as the **Web Service** will get as input
 	![Deploying the Machine Learning Web Service](images/deploy_ws_classic.png)
 
     _Deploying the Machine Learning Web Service_
+	
+12. Once deployed, the portal will redirect you to the page where you may find different details about your newly deployed **Web Service**:
 
+* **API Key**: To be used for API Calls
+* **Request/Response**: REST API Endpoint, examples
+* **Test**: Web pop-up in which you can provide the Web Service Input and receive directly the output, **no code required**
+* **Apps**: Pre-built excel files in which you can consume the Web Service, **no code required**
+
+	![Viewing the Web Service Details](images/web-service-portal.png)
+
+    _Viewing the Web Service Details_
 
 <a name="Exercise6"></a>
 ## Exercise 6: Create a Node.JS app to consume the Web Service ##
@@ -432,9 +442,9 @@ _Note_: This operation needs to be done as the **Web Service** will get as input
 
 1. If Visual Studio Code isn't installed on your workstation, go to http://code.visualstudio.com and install it now.
 
-1. Start Visual Studio Code and select **Open Folder...** from the **File** menu. In the ensuing dialog, select the `resources\clientapp` folder included in the lab resources.
+1. Start Visual Studio Code and select **Open Folder...** from the **File** menu. In the ensuing dialog, select the `Using Azure Machine Learning Web Service to Predict Claim Fraud/Client/Fraud Detector/` folder included in the lab resources.
 
-	![Selecting the client app folder](images/fe-select-folder.png)
+	![Selecting the client app folder](images/open-clientapp-vscode.PNG)
 
     _Selecting the client app folder_ 
 
@@ -444,111 +454,109 @@ _Note_: This operation needs to be done as the **Web Service** will get as input
 	npm install
 	```
 
-1. Return to the BMW Cars project in the Custom Vision Service portal, click **Performance**, and then click **Make default** to make sure the latest iteration of the model is the default iteration. 
+1. Before you can run the app and use it to call the Custom Vision Service, it must be modified to include endpoint and authorization information. To that end, go back to the Web Service Portal and open in a new window the **Request/Response** hyperlink.
 
-	![Specifying the default iteration](images/portal-make-default.png)
 
-    _Specifying the default iteration_ 
+1. Here you may find a **Request URI** which needs to be provided to the application. To do that, copy the URI:
 
-1. Before you can run the app and use it to call the Custom Vision Service, it must be modified to include endpoint and authorization information. To that end, click **Prediction URL**.
-
-	![Viewing Prediction URL information](images/portal-prediction-url.png)
-
-    _Viewing Prediction URL information_ 
-
-1. The ensuing dialog lists two URLs: one for uploading images via URL, and another for uploading local images. Copy the Prediction API URL for image files to the clipboard. 
-
-	![Copying the Prediction API URL](images/copy-prediction-url.png)
+	![Copying the Prediction API URL](images/copy-request-uri.png)
 
     _Copying the Prediction API URL_ 
 
 1. Return to Visual Studio Code and click **predict.js** to open it in the code editor.
 
-	![Opening predict.js](images/vs-predict-file.png)
+	![Opening predict.js](images/open-predictjs.PNG)
 
     _Opening predict.js_ 
 
-1. Replace `<Custom Vision Prediction URI>` with the URL on the clipboard.
+1. Replace `<Copy Prediction URL Here>` with the URL on the clipboard.
 
     ```js
-    // Replace <Custom Vision Prediction URI> with your valid Prediction URI for Custom Vision.
-    const predictionUri = '<Custom Vision Prediction URI>';
+    // Replace <Copy Prediction URL Here> with your valid Prediction URI for the AML Web Service.
+    var url = "<Copy Prediction URL Here>";
     ```
 
-1. Return to the Custom Vision Service portal and copy the Prediction API key to the clipboard. 
+1. Return to the initial Web Service portal and copy the API API key to the clipboard. 
 
-	![Copying the Prediction API key](images/copy-prediction-key.png)
+	![Copying the Prediction API key](images/copy-apikey.png)
 
     _Copying the Prediction API key_ 
 
-1. Return to Visual Studio Code and replace `<Prediction Key>` with the API key on the clipboard.
+1. Return to Visual Studio Code and replace `<Copy API Key Here>` with the API key on the clipboard.
 
     ```js
-    // Replace <Prediction Key> with your valid prediction key.
-    const predictionKey = '<Prediction Key>';
+    // Replace <Copy API Key Here> with your valid prediction key.
+    var predictionKey = "<Copy API Key Here>";
     ```
 
-1. Scroll down in **predict.js** and examine the block of code that begins on line 34. This is the code that calls out to the Custom Vision Service using AJAX. Using the Custom Vision Prediction API is as easy as making a simple, authenticated POST to a REST endpoint.
+1. Scroll down in **predict.js** and examine the block of code that begins on line 88. This is the code that calls out to the AML Web Service using AJAX. Using the AML Web Service API is as easy as making a simple, authenticated POST to a REST endpoint.
 
     ```js
         $.ajax({
             type: "POST",
-            url: predictionUri,
-            data: imageBytes,
-            processData: false,
+            url: url,
+            data: JSON.stringify(jsonBody),
             headers: {
-                "Prediction-Key": predictionKey,
-                "Content-Type": "multipart/form-data"
+                "Authorization": "Bearer " + predictionKey,
+                "Content-Type": "application/json"
             }
         }).done(function (data) {
+            fs.writeFileSync("./logs/serviceResponse.txt", JSON.stringify(data));
 
-            var predictions = data.predictions;
+            predictionResults = data.Results.output1.value.Values;
             ...
     ```
 
-    _Making a call to the Prediction API_ 
+    _Making a call to the AML Web Service API_ 
 
 1. Return to the integrated terminal in Visual Studio Code and execute the following command to start the app:
 
 	```
 	npm start
 	```
+	
+	![Using the Fraud Detector App](images/fraud-detector-main.PNG)
+
+    _Using the Fraud Detector App_ 
 
 
-The client app is a cross-platform app written with Node.js and [Electron](https://electron.atom.io/). As such, it is equally capable of running on Windows, macOS, and Linux. In the next exercise, you will use it to classify images of BMW cars and display them.
+The client app is a cross-platform app written with Node.js and [Electron](https://electron.atom.io/). As such, it is equally capable of running on Windows, macOS, and Linux. In the next exercise, you will use it to classifiy new claims and display their results.
 
 <a name="Exercise7"></a>
-## Exercise 7: Use the app to classify images ##
+## Exercise 7: Use the app to classify new claims ##
 
-In this exercise, you will use the app to submit images to the Custom Vision Service for classification. The app uses the JSON information returned from calls to the Custom Vision Prediction API's [PredictImage](https://southcentralus.dev.cognitive.microsoft.com/docs/services/eb68250e4e954d9bae0c2650db79c653/operations/58acd3c1ef062f0344a42814) method to tell you what type of BMW model the picture contains. It also shows the probability that the classification assigned to the image is correct.
+In this exercise, you will use the app to submit claims to the AML Web Service for classification. The app uses the JSON information returned from calls to the Web Service to tell you if the claims are fraudulent or not. It also shows the probability that the classification assigned to each claim is correct.
 
 1. Click the **Browse (...)** button in the  app. 
 
-1. Browse to the `tests` folder in the lab resources. Select any image file and then click **Open**.
+1. Browse to the `Using Azure Machine Learning Web Service to Predict Claim Fraud\Client\Fraud Detector\data` folder in the lab resources. Select the file in there and then click **Open**.
 
-1. Click the **Predict** button to submit the image to the Custom Vision Service.
+1. The application feeds back telling you the number of valid claims which have been loaded.
 
-	![Submitting the image to the Custom Vision Service](images/app-click-predict.png)
+	![Number of claims provided](images/number-claims.PNG)
 
-    _Submitting the image to the Custom Vision Service_ 
+    _Number of claims provided_ 
 
-1. Check that the app identifies the image as a specific BMW model. Is that the correct model of the car?
+
+1. Click the **Predict** button to submit the collection of claims to the Web Service.
  
-1. Repeat steps 1 through 4 for a random image (not containing any car) and confirm that the app does **not** classify the image as any known BMW model.
+1. The Web Service includes in its response a **class label** and a **prediction probability** which is shown by the Client App in a tabular format:
 
-	![Submitting the image to the Custom Vision Service](images/app-click-predict-unknown.png)
+	![Viewing the results of the REST API Call](images/api-call-results.PNG)
 
-    _Submitting a non-car image to the Custom Vision Service_ 
+    _Viewing the results of the REST API Call_ 
 
-1. As you can see, using the Prediction API from an app is just as reliable as through the Custom Vision Service portal — and way more fun! What's more, if you go to the Predictions page in the portal, you'll find that each of the images uploaded via the app is shown there as well.
+1. As you can see, using the Prediction API from an app is just as reliable as through the AML Web Service portal — and way more fun!
  
-Feel free to test with more images of your own and gauge the model's adeptness at identifying the right BMW model. And remember that in general, the more images you train with, the smarter the model will be.
+Feel free to test with more cases of claims of your own and put to test the ability of the model of identifying the fraudulent claims. And remember that in general, the more claims you train with, the smarter the model will be.
 
 <a name="Summary"></a>
 ## Summary ##
 
-Image classification is playing an increasingly large role in industry as a means for automating such tasks as checking images uploaded to Web sites for offensive content and inspecting parts rolling off of assembly lines for defects. Building an image-classification model manually — that is, coding it from the ground up in Python, R, or another language — requires no small amount of expertise, but the Custom Vision Service enables virtually anyone to build sophisticated image-classification models. And once a model is built and trained, an app that uses it is only few lines of code away.
+Fraud classification/detection is a key endeavour to be tackled by Financial Services companies in their search of managing risks better and in a timely manner. This use-case can work at its best when coupled with a Custom Vision scenario in which the claim details (parts which have been damaged, severity and other information) are automatically determined by such a model and fed to a Fraud Detection model afterwards.
+
+However, as companies such siloed data already, this can be implemented really quickly and made available to production systems!
 
 ---
 
-Copyright 2018 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.
+Copyright 2018 Softelligence. All rights reserved.

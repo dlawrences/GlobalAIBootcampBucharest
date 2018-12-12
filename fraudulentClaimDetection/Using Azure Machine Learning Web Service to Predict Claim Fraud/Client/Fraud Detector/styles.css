@@ -70,6 +70,7 @@ input:disabled {
 
 .fraud td {
     color: #FF0000;
+    font-weight: bold; 
 }
 
 .nofraud td {
