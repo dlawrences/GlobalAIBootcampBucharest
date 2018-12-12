@@ -1,4 +1,4 @@
-# GlobalAIBootcampBucharest
+# Global AI Bootcamp Bucharest
 Welcome to the Global AI Bootcamp - Bucharest Edition official repository!
 
 During these workshops you have the chance to get your hands dirty so that by the end of the Bootcamp you'll be able to infuse Machine Learning into your own applications. Level: beginner – intermediate.
