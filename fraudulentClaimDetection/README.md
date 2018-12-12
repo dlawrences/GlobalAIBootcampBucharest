@@ -149,25 +149,69 @@ In this exercise, you will upload the claims dataset of the Insurance Company. T
 With the dataset uploaded and attached to the project, you are ready to create your experiment and train your own Classification model. Onto the next exercise!
 
 <a name="Exercise3"></a>
-## Exercise 3: Train the model ##
+## Exercise 3: Train the Classification model in an AML Studio Experiment ##
 
-In this exercise, you will train the model using the images uploaded and tagged in the previous exercise. Training can be accomplished with a simple button click in the portal, or by calling the [TrainProject](https://southcentralus.dev.cognitive.microsoft.com/docs/services/d9a10a4a5f8549599f1ecafc435119fa/operations/58d5835bc8cb231380095bed) method in the [Custom Vision Training API](https://southcentralus.dev.cognitive.microsoft.com/docs/services/d9a10a4a5f8549599f1ecafc435119fa/operations/58d5835bc8cb231380095be3). Once trained, a model can be refined by uploading additional tagged images and retraining it.
+In this exercise, you will create an experiment in which you will train a Classification model (Boosted Decision Tree) using the **Fraudulent Claims Dataset** you have uploaded in the portal.
  
-1. Click the **Train** button at the top of the page to train the model. Each time you train the model, a new iteration is created. The Custom Vision Service maintains several iterations, allowing you to compare your progress over time.
+1. Click **New** >> **Experiment** >> **Blank Experiment**.
 
-	![Training the model](images/portal-click-train.png)
+	![Creating a new blank experiment](images/new-blank-experiment.PNG)
 
-    _Training the model_
+    _Creating a new blank experiment_ 
 
-1. Wait for the training process to complete. (It should only take a few seconds.) Then review the training statistics presented to you for iteration 1. 
+1. Name the experiment to **Fraudulent Claim Detection Experiment** on the experiment canvas.
 
-    **Precision** and **recall** are separate but related  measures of the model's accuracy. You can learn more about precision and recall from https://en.wikipedia.org/wiki/Precision_and_recall.
+	![Renaming the experiment](images/experiment-canvas.PNG)
 
-	![Results of training the model](images/portal-train-complete.png)
+    _Renaming the experiment_ 
+	
+1. Drag and drop the **Fraudulent Claims Dataset** dataset on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Saved Datasets** >> **My Datasets**.
 
-    _Results of training the model_ 
+	![Searching the dataset and adding it to the canvas](images/drag-dataset.PNG)
 
-Now let's test the model using the portal's Quick Test feature, which allows you to submit images to the model and see how it classifies them using the knowledge gained from the training images.
+    _Searching the dataset and adding it to the canvas_
+	
+1. Drag and drop the **Edit Metadata** module on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Data Transformation** >> **Manipulation**.
+	
+1. Click the _output port_ of the **Fraudulent Claims Dataset** module and connect it to the _input port_ of the **Edit Metadata** module by _dragging and dropping_.
+
+	![Add the Edit Metadata module and connect modules](images/edit-metadata-connect.PNG)
+
+    _Add the Edit Metadata module and connect modules_
+	
+1. Inspect the properties of newly added **Edit Metadata** module by clicking it and going through the right-hand site.
+
+	![Inspecting Edit Metadata Properties](images/edit-metadata-properties.PNG)
+
+    _Inspecting Edit Metadata Properties_
+	
+* `Selected columns`: interactive column selector which gets its data source from the previous connected module;
+* `Data type`: columns which have been chosen in this module will been converted to the **option** selected from this list (**Unchanged** means no data type conversion occurs);
+* `Categorical`: columns which have been chosen in this module will be converted to categorical features, meaning all operations which happen on categorical features will work and columns will be interpreted as such by the models (e.g. **One Hot Encoding**);
+* `Fields`: use this option if you want to change the way that Azure Machine Learning uses the data in a model
+	* **Feature**: Use this option to flag a column as a feature, for use with modules that operate only on feature columns. By default, all columns are initially treated as features.
+
+	* **Label**: Use this option to mark the label (also known as the predictable attribute, or target variable). Many modules requires that at least one (and only one) label column be present in the dataset.
+	
+		In many cases, Azure Machine Learning can infer that a column contains a class label, but by setting this metadata you can ensure that the column is identified correctly. Setting this option does not change data values, only the way that some machine learning algorithms handle the data.
+
+	* **Weight**: Use this option with numeric data to indicate that column values represents weights for use in machine learning scoring or training operations. Only one weight column can be present in a dataset, and the column must be numeric.
+	
+	* **Clear feature**: Use this option to remove the feature flag
+	
+	* **Clear label**: Use this option to remove the **label** metadata from the specified column
+	
+	* **Clear score**: Use this option to remove the **score** metadata from the specified column
+	
+	* **Clear weight**: Use this option to remove the **weight** metadata from the specified column
+	
+* `New column names`: type the new name of the selected column or columns
+
+1. Configure the **Edit Metadata** module so that the `FraudFound_P` column of the dataset is treated as a **label**.
+
+	![Add the label metadata to the FraudFound_P column]images/config-edit-metadata-fraudfoundp.PNG)
+
+    _Add the **label** metadata to the FraudFound_P column_
 
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
