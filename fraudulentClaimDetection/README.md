@@ -69,7 +69,7 @@ This hands-on lab includes the following exercises:
 - [Exercise 2: Upload training dataset](#Exercise2)
 - [Exercise 3: Train the Classification model in an AML Studio Experiment](#Exercise3)
 - [Exercise 4: Evaluate the model and increase performance](#Exercise4)
-- [Exercise 5: Create a Node.js app that uses the model](#Exercise5)
+- [Exercise 5: Create a Predictive Experiment and Deploy a ML Web Service](#Exercise5)
 - [Exercise 6: Use the app to classify new claims](#Exercise6)
 
 Estimated time to complete this lab: **45** minutes.
@@ -353,36 +353,66 @@ In this exercise, you will create an experiment in which you will train a Classi
 	
 	The precision measure shows what percentage of positive predictions where correct, whereas recall measures what percentage of positive events were correctly predicted. To put it in a different way: precision is a measure of how good predictions are with regard to false positives, whereas recall is measures how good the predictions are with regard to false negatives. Whichever type of error is more important – or costs more - is the one that should receive most attention.
 	
-	And for our Insurance Company, the cost is **way higher** to not determine before-hand if a claim is **_fraudulent_** versus raising a **_fale alarm_** (predicting that a claim may be **_fraudulent_** and turning out it is not).
+	And for our Insurance Company, the cost is **way higher** to not determine before-hand if a claim is **_fraudulent_** versus raising a **_false alarm_** (predicting that a claim may be **_fraudulent_** and turning out it is not).
 	
 	![Precision vs Recall](images/precision_recall.png)
 
     _Precision vs Recall_
 
-In [Exercise 5](#Exercise5), you will create a Node.js app that uses the model to identify the correct BMW model in images presented to it. But you don't have to write an app to test the model; you can do your testing in the portal, and you can further refine the model using the images that you test with. In this exercise, you will test the model's ability to identify the BMW model using test images provided for you.
-
-1. Click **Quick Test** at the top of the page.
- 
-	![Testing the model](images/portal-click-quick-test.png)
-
-    _Testing the model_ 
-
-1. Click **Browse local files**, and then browse to the `resources\images\bmw_cars\test` folder in the lab resources. Select any image, and click **Open**.
-
-	![Selecting a test image](images/portal-select-test-01.png)
-
-    _Selecting a test image_ 
-
-1. Examine the results of the test in the "Quick Test" dialog. What is the probability that the car is an E60 or another model?
-
-1. Try a couple more test images and examine the results. How is the model performing? Any ideas on how we might improve such a model?
-
-Now let's go a step further and incorporate the model's intelligence into an app.
-
 <a name="Exercise5"></a>
 ## Exercise 5: Create a Node.js app that uses the model ##
 
-The true power of the Microsoft Custom Vision Service is the ease with which developers can incorporate its intelligence into their own applications using the [Custom Vision Prediction API](https://southcentralus.dev.cognitive.microsoft.com/docs/services/eb68250e4e954d9bae0c2650db79c653/operations/58acd3c1ef062f0344a42814). In this exercise, you will use Visual Studio Code to modify an app to use the model you built and trained in previous exercises.
+The true power of the AML Studio is the ease with which developers can incorporate its intelligence into their own applications using the Predictive Experiments and the Machine Learning Web Services.In this exercise, you will use create a Predictive Experiment which will be deployed as a Web Service. This Web Service is going to be used when **predicting** the label for **_new claims_**.
+
+1. Before going further, **save** your current experiment by hitting **Save** in the bottom part of the portal and then **run** the experiment once again.
+
+2. Once the experiment run has completed, click **Set Up Web Service** in the bottom part of the portal and choose **Predictive Web Service [Recommended]**.
+
+	![Set up Predictive Experiment](images/set-up-ws.png)
+
+    _Set up Predictive Experiment_
+
+3. AML Studio reorganizes your **Training experiment** into a **Predictive experiment**, saving the trained model and defining a **Web service input** and a **Web service output**.
+
+	![Initial Predictive Experiment](images/predictive_exp_initial.PNG)
+
+    _Initial Predictive Experiment_
+	
+4. In order to be able to use this properly, we have to drop/add some other modules. First, drop the **Edit Metadata** module which changes the column `FraudFound_P` to be interpreted during the experiment as a _label_.
+
+	![Drop Edit Metadata for label](images/predictive_exp_drop_meta_label.PNG)
+
+    _Drop Edit Metadata for label_
+	
+5. Add to the canvas the **Select Columns in Dataset** module and connect its _input port_ to the _output port_ of the **Fraudulent Claims Dataset** dataset. Connect its _output port_ to the _input port_ of the closest **Edit Metadata** module (or the second one added on the canvas during the creation of the **Training experiment**).
+
+6. Configure the **Select Columns in Dataset** to begin with **All Columns** and exclude the `FraudFound_P` attribute.
+
+	![Exclude the FraudFound_P label](images/select_columns_exclude.PNG)
+
+    _Exclude the FraudFound_P label_
+
+_Note_: This operation needs to be done as **Web Service** will serve as input to claims which have not been labelled before-hand.
+
+7. Connect the _output port_ of the **Web Service Input** module to the _input port_ of the **Edit Metadata** module to which the **Select Columns in Dataset** is also connected. It should look like this:
+
+	![Fixing the input of the Predictive Experiment](images/predictive_exp_input.PNG)
+
+    _Fixing the input of the Predictive Experiment_
+	
+8. Remove the **SMOTE** module as no oversampling needs to be done from this point onwards and connect the **Edit Metadata** module previously connected to it to the **Score Model** following this.
+
+9. Add a new **Select Columns in Dataset** Module between the **Score Model** module and the **Web Service Output** module and choose the following columns: `PolicyNumber, Scored Labels, Scored Probabilities`.
+
+	![Fixing the output of the Predictive Experiment Experiment](images/predictive_exp_ready.PNG)
+
+    _Fixing the output of the Predictive Experiment_
+	
+	![Defining the Web Service output columns](images/output_select_columns.PNG)
+
+    _Defining the Web Service output columns_
+
+10. **Run** the **Predictive Experiment** once ready.
 
 1. If Node.js isn't installed on your system, go to https://nodejs.org and install the latest LTS version for your operating system.
 
