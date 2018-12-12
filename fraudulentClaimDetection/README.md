@@ -209,12 +209,22 @@ In this exercise, you will create an experiment in which you will train a Classi
 
 7. Configure the **Edit Metadata** module so that the `FraudFound_P` column of the dataset is treated as a **label**.
 
-	![Add the label metadata to the FraudFound_P column]images/config-edit-metadata-fraudfoundp.PNG)
+	![Add the label metadata to the FraudFound_P column](images/config-edit-metadata-fraudfoundp.PNG)
 
     _Add the **label** metadata to the FraudFound_P column_
 
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
+
+8. Add a new **Edit Metadata** module which will **_Make categorical_** all columns in the dataset, excluding `Age`, `Deductible`, `Year`. Connect this to the output module of the previous 
+
+	![Choose columns which will be transformed to categorical](images/exclude-columns-metadata.PNG)
+
+    _Choose columns which will be transformed to categorical_
+	
+	![Configure the categorical setting](images/exclude-make-categorical.PNG)
+
+    _Configure the categorical setting_
 
 In [Exercise 5](#Exercise5), you will create a Node.js app that uses the model to identify the correct BMW model in images presented to it. But you don't have to write an app to test the model; you can do your testing in the portal, and you can further refine the model using the images that you test with. In this exercise, you will test the model's ability to identify the BMW model using test images provided for you.
 
