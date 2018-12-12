@@ -301,7 +301,61 @@ In this exercise, you will create an experiment in which you will train a Classi
 21. Inspect the **_decision trees_** which have been built for your data. Each node is part of a series of decisions which lead to a result: **1** - _fraudulent_ or **0** - _non-fraudulent_.
 
 <a name="Exercise4"></a>
-## Exercise 4: Test the model ##
+## Exercise 4: Evaluate the model and increase performance ##
+
+1. Now that the model has been trained, in order to evaluate its performance, we have to test it against the **testing** batch and aggregate results. In order to do that, drag and drop the **Score Model** module to the canvas and connect:
+* its _left most input port_ to the _output port_ of the **Train Model** module added previously;
+* its _right most input port_ to the _right most output port_ of the **Split Data** module added previously.
+
+	![Scoring the model](images/score-model-config.PNG)
+
+    _Scoring the model_
+	
+	This module will **predict** the _label_ of the data included in the **_testing batch_**. A **prediction** may present an error or it may be accurate (we can determine this as we already have the _label_ of the data in the **_testing batch_**).
+
+2. After **running**, the output of the module presents _two new columns_ in our case:
+* **Scored Labels**: the label which the model has **predicted** for the claim, on a row by row basis;
+* **Scored Probabilities**: the probability determined by the model when **predicting** the label.
+
+	![Model results](images/score-model-results.PNG)
+
+    _Model results_
+	
+	As you can tell from the image above, the distribution in **groups** looks rather similar to the initial case, however in order to proof the algorithm some **_indicators_** have to be calculated.
+	
+3. In order to evaluate the model performance, drag and drop the **Evaluate Model** module on the canvas and connect its _left most input port_ to the _output port_ of the **Score Model** module and then run the experiment once again.
+
+	![Model results](images/eval-model-config.PNG)
+
+    _Setting up the model evaluation_
+	
+4. After the experiment run has completed, you are able to view the results of the **Evaluate Model** module by clicking its _output port_ and then **Visualize**.
+
+	![Model results](images/eval-model-results.PNG)
+
+    _Setting up the model evaluation_
+	
+5. The **Evaluate Model** results state that the **_Positive Label_** is equal to **_1_** and that the **_Negative Label_** is equal to **_0_**. This means that a positive event is considered a **fraud** and the other one a **non-fraudulent claim**. All set and go:
+
+* **_True Positive_**: The number of testing claims which have been labelled as _fraudulent_ and **predicted** by the model as **_fraudulent_** as well;
+* **_True Negative_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_non-fraudulent_** as well;
+* **_False Negative_**: The number of testing claims which have been labelled as _fraudulent_ and **predicted** by the model as **_non-fraudulent_**;
+* **_False Positive_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_fraudulent_**;
+
+	These measures are really important in determining how well is the model predicting whether a claim is **_fraudulent_** or **_not_**.
+	
+* **_Accuracy_**: The ratio of correctly predicted observations or equal to `(TP + TN)/(TP + TN + FP + FN)`
+* **_Recall_**: The ratio of correctly predicted positive events or equal to  `TP / (TP + FN)`. It is also known as **sensitivity** or **true positive rate**.
+
+* **_Precision_**: The ratio of correct positive observations or equal to `TP / (TP + FP)`.
+
+	Both precision and recall work well if there’s an uneven class distribution as is often the case. They both focus on the performance of positives rather than negatives, which is why it’s important to correctly assign the “positive” predicate to the value of most interest (in our case the **fraudulent** claims).
+	
+	The precision measure shows what percentage of positive predictions where correct, whereas recall measures what percentage of positive events were correctly predicted. To put it in a different way: precision is a measure of how good predictions are with regard to false positives, whereas recall is measures how good the predictions are with regard to false negatives. Whichever type of error is more important – or costs more - is the one that should receive most attention.
+	
+	![Model results](images/precision_recall.PNG)
+
+    _Precision vs Recall_
 
 In [Exercise 5](#Exercise5), you will create a Node.js app that uses the model to identify the correct BMW model in images presented to it. But you don't have to write an app to test the model; you can do your testing in the portal, and you can further refine the model using the images that you test with. In this exercise, you will test the model's ability to identify the BMW model using test images provided for you.
 
