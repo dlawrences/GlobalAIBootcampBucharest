@@ -70,7 +70,8 @@ This hands-on lab includes the following exercises:
 - [Exercise 3: Train the Classification model in an AML Studio Experiment](#Exercise3)
 - [Exercise 4: Evaluate the model and increase performance](#Exercise4)
 - [Exercise 5: Create a Predictive Experiment and Deploy a ML Web Service](#Exercise5)
-- [Exercise 6: Use the app to classify new claims](#Exercise6)
+- [Exercise 6: Create a Node.JS app to consume the Web Service](#Exercise6)
+- [Exercise 7: Use the app to classify new claims](#Exercise7)
 
 Estimated time to complete this lab: **45** minutes.
 
@@ -360,7 +361,7 @@ In this exercise, you will create an experiment in which you will train a Classi
     _Precision vs Recall_
 
 <a name="Exercise5"></a>
-## Exercise 5: Create a Node.js app that uses the model ##
+## Exercise 5: Create a Predictive Experiment and Deploy a ML Web Service ##
 
 The true power of the AML Studio is the ease with which developers can incorporate its intelligence into their own applications using the Predictive Experiments and the Machine Learning Web Services.In this exercise, you will use create a Predictive Experiment which will be deployed as a Web Service. This Web Service is going to be used when **predicting** the label for **_new claims_**.
 
@@ -392,7 +393,7 @@ The true power of the AML Studio is the ease with which developers can incorpora
 
     _Exclude the FraudFound_P label_
 
-_Note_: This operation needs to be done as **Web Service** will serve as input to claims which have not been labelled before-hand.
+_Note_: This operation needs to be done as the **Web Service** will get as input claims which have not been labelled before-hand for prediction.
 
 7. Connect the _output port_ of the **Web Service Input** module to the _input port_ of the **Edit Metadata** module to which the **Select Columns in Dataset** is also connected. It should look like this:
 
@@ -413,6 +414,17 @@ _Note_: This operation needs to be done as **Web Service** will serve as input t
     _Defining the Web Service output columns_
 
 10. **Run** the **Predictive Experiment** once ready.
+
+11. Once the experiment run has completed, click **Deploy Web Service** and choose 
+**Deploy Web Service [Classic]**.
+
+	![Deploying the Machine Learning Web Service](images/deploy_ws_classic.png)
+
+    _Deploying the Machine Learning Web Service_
+
+
+<a name="Exercise6"></a>
+## Exercise 6: Create a Node.JS app to consume the Web Service ##
 
 1. If Node.js isn't installed on your system, go to https://nodejs.org and install the latest LTS version for your operating system.
 
@@ -505,8 +517,8 @@ _Note_: This operation needs to be done as **Web Service** will serve as input t
 
 The client app is a cross-platform app written with Node.js and [Electron](https://electron.atom.io/). As such, it is equally capable of running on Windows, macOS, and Linux. In the next exercise, you will use it to classify images of BMW cars and display them.
 
-<a name="Exercise6"></a>
-## Exercise 6: Use the app to classify images ##
+<a name="Exercise7"></a>
+## Exercise 7: Use the app to classify images ##
 
 In this exercise, you will use the app to submit images to the Custom Vision Service for classification. The app uses the JSON information returned from calls to the Custom Vision Prediction API's [PredictImage](https://southcentralus.dev.cognitive.microsoft.com/docs/services/eb68250e4e954d9bae0c2650db79c653/operations/58acd3c1ef062f0344a42814) method to tell you what type of BMW model the picture contains. It also shows the probability that the classification assigned to the image is correct.
 
