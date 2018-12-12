@@ -52,7 +52,7 @@ This repository itself contains the following sub-folders:
 <a name="Cost"></a>
 ### Cost ###
 
-![](Images/cost-0.png)
+![](images/cost-0.png)
 
 There is no cost associated with this lab because it doesn't require an Azure subscription.
 
@@ -81,7 +81,7 @@ The first step in building a classification model within AML Studio is to create
 
 1. Open the [AML Studio portal](https://studio.azureml.net/) in your browser. Then click **Sign In**. 
  
-    ![Signing in to the AML Studio portal](Images/portal-sign-in.png)
+    ![Signing in to the AML Studio portal](images/portal-sign-in.PNG)
 
     _Signing in to the AML Studio portal_
 
@@ -96,3 +96,11 @@ The first step in building a classification model within AML Studio is to create
 	![Choosing to create an empty project](images/new-empty-project.PNG)
 
     _Choosing to create an empty project_
+
+1. In the "New project" dialog, name the project **Fraudulent Claim detection** and click **Ok**.
+
+	![Creating an AML Studio project](images/portal-create-project.PNG)
+
+    _Creating an AML Studio project_
+
+The next step is to upload the claims dataset to be used for training to the project.
