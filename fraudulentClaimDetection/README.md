@@ -478,7 +478,7 @@ _Note_: This operation needs to be done as the **Web Service** will get as input
 
 1. Return to the initial Web Service portal and copy the API API key to the clipboard. 
 
-	![Copying the Prediction API key](images/copy-apikey.png)
+	![Copying the Prediction API key](images/copy-apikey.PNG)
 
     _Copying the Prediction API key_ 
 
