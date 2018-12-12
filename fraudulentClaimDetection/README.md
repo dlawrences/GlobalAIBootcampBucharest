@@ -248,6 +248,8 @@ In this exercise, you will create an experiment in which you will train a Classi
 	![Visualize results](images/visualize-results.PNG)
 
     _Visualize results_
+	
+* _Note_: The `FraudFound_P` column is a **_categorical label_**. We can tell from the column chart that 94% of the claims are not fraudulent (`FraudFound_P = 0`), whilst the other 6% are labelled as fraudulent (`FraudFound_P = 1`). This is an **unbalanced** dataset and it may pose problems later on, meaning that the classification model **may be bi
 
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
