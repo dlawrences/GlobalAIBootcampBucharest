@@ -340,9 +340,9 @@ In this exercise, you will create an experiment in which you will train a Classi
 * **_True Positive_**: The number of testing claims which have been labelled as _fraudulent_ and **predicted** by the model as **_fraudulent_** as well;
 * **_True Negative_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_non-fraudulent_** as well;
 * **_False Negative_**: The number of testing claims which have been labelled as _fraudulent_ and **predicted** by the model as **_non-fraudulent_**;
-* **_False Positive_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_fraudulent_**;
+* **_False Positive_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_fraudulent_**.
 
-	These measures are really important in determining how well is the model predicting whether a claim is **_fraudulent_** or **_not_**.
+	These measures are really important in determining how well the model predicting is whether a claim is **_fraudulent_** or **_not_**.
 	
 * **_Accuracy_**: The ratio of correctly predicted observations or equal to `(TP + TN)/(TP + TN + FP + FN)`
 * **_Recall_**: The ratio of correctly predicted positive events or equal to  `TP / (TP + FN)`. It is also known as **sensitivity** or **true positive rate**.
@@ -352,6 +352,8 @@ In this exercise, you will create an experiment in which you will train a Classi
 	Both precision and recall work well if there’s an uneven class distribution as is often the case. They both focus on the performance of positives rather than negatives, which is why it’s important to correctly assign the “positive” predicate to the value of most interest (in our case the **fraudulent** claims).
 	
 	The precision measure shows what percentage of positive predictions where correct, whereas recall measures what percentage of positive events were correctly predicted. To put it in a different way: precision is a measure of how good predictions are with regard to false positives, whereas recall is measures how good the predictions are with regard to false negatives. Whichever type of error is more important – or costs more - is the one that should receive most attention.
+	
+	And for our Insurance Company, the cost is **way higher** to not determine before-hand if a claim is **_fraudulent_** versus raising a **_fale alarm_** (predicting that a claim may be **_fraudulent_** and turning out it is not).
 	
 	![Model results](images/precision_recall.PNG)
 
