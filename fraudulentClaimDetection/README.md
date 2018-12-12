@@ -429,7 +429,7 @@ _Note_: This operation needs to be done as the **Web Service** will get as input
 * **Test**: Web pop-up in which you can provide the Web Service Input and receive directly the output, **no code required**
 * **Apps**: Pre-built excel files in which you can consume the Web Service, **no code required**
 
-	![Viewing the Web Service Details](images/web-service-portal.png)
+	![Viewing the Web Service Details](images/web-service-portal.PNG)
 
     _Viewing the Web Service Details_
 
@@ -459,7 +459,7 @@ _Note_: This operation needs to be done as the **Web Service** will get as input
 
 1. Here you may find a **Request URI** which needs to be provided to the application. To do that, copy the URI:
 
-	![Copying the Prediction API URL](images/copy-request-uri.png)
+	![Copying the Prediction API URL](images/copy-request-uri.PNG)
 
     _Copying the Prediction API URL_ 
 
