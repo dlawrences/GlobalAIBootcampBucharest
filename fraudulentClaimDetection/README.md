@@ -249,7 +249,15 @@ In this exercise, you will create an experiment in which you will train a Classi
 
     _Visualize results_
 	
-* _Note_: The `FraudFound_P` column is a **_categorical label_**. We can tell from the column chart that 94% of the claims are not fraudulent (`FraudFound_P = 0`), whilst the other 6% are labelled as fraudulent (`FraudFound_P = 1`). This is an **unbalanced** dataset and it may pose problems later on, meaning that the classification model **may be bi
+* _Note_: The `FraudFound_P` column is a **_categorical label_**. We can tell from the column chart that 94% of the claims are not fraudulent (`FraudFound_P = 0`), whilst the other 6% are labelled as fraudulent (`FraudFound_P = 1`). This is an **unbalanced** dataset and it may pose problems later on, meaning that the classification model may easily **bias** to the class with the most samples, disregarding the other one.
+
+12. In order to prevent the **class bias** to non-fraudulent claims, add the **SMOTE** module to the canvas and connect its _input port_ to the _output port_ of the previously added module. Configure it to use _All labels_ as **selected columns** and a value of _1450_ for **SMOTE Percentage**. Do define a **random seed** different from _0_ so that multiple runs will start from the same scenario.
+
+**SMOTE** stands for _Synthetic Minority Oversampling Technique_. This is a statistical technique for increasing the number of cases in your dataset in a balanced way. The module works by generating new instances from existing minority cases that you supply as input. This implementation of SMOTE does not change the number of majority cases.
+
+	![SMOTE Module Configuration](images/click-visualize.PNG)
+	
+    _SMOTE Module Configuration_
 
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
