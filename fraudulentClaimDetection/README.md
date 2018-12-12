@@ -87,9 +87,9 @@ The first step in building a classification model within AML Studio is to create
 
 1. If you are asked to sign in, do so using the credentials for your Microsoft account. If you are asked to let this app access your info, click **Yes**, and if prompted, agree to the terms of service.
 
-1. Click **New ** >> **Project** > **Empty Project** to create a new empty project.
+1. Click **New** >> **Project** > **Empty Project** to create a new empty project.
   
-	![Creating a new resource](images/click-new.png)
+	![Creating a new resource](images/click-new.PNG)
 
     _Creating a new resource_
 	
