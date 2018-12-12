@@ -159,27 +159,27 @@ In this exercise, you will create an experiment in which you will train a Classi
 
     _Creating a new blank experiment_ 
 
-1. Name the experiment to **Fraudulent Claim Detection Experiment** on the experiment canvas.
+2. Name the experiment to **Fraudulent Claim Detection Experiment** on the experiment canvas.
 
 	![Renaming the experiment](images/experiment-canvas.PNG)
 
     _Renaming the experiment_ 
 	
-1. Drag and drop the **Fraudulent Claims Dataset** dataset on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Saved Datasets** >> **My Datasets**.
+3. Drag and drop the **Fraudulent Claims Dataset** dataset on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Saved Datasets** >> **My Datasets**.
 
 	![Searching the dataset and adding it to the canvas](images/drag-dataset.PNG)
 
     _Searching the dataset and adding it to the canvas_
 	
-1. Drag and drop the **Edit Metadata** module on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Data Transformation** >> **Manipulation**.
+4. Drag and drop the **Edit Metadata** module on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Data Transformation** >> **Manipulation**.
 	
-1. Click the _output port_ of the **Fraudulent Claims Dataset** module and connect it to the _input port_ of the **Edit Metadata** module by _dragging and dropping_.
+5. Click the _output port_ of the **Fraudulent Claims Dataset** module and connect it to the _input port_ of the **Edit Metadata** module by _dragging and dropping_.
 
 	![Add the Edit Metadata module and connect modules](images/edit-metadata-connect.PNG)
 
     _Add the Edit Metadata module and connect modules_
 	
-1. Inspect the properties of newly added **Edit Metadata** module by clicking it and going through the right-hand site.
+6. Inspect the properties of newly added **Edit Metadata** module by clicking it and going through the right-hand site.
 
 	![Inspecting Edit Metadata Properties](images/edit-metadata-properties.PNG)
 
@@ -207,7 +207,7 @@ In this exercise, you will create an experiment in which you will train a Classi
 	
 * `New column names`: type the new name of the selected column or columns
 
-1. Configure the **Edit Metadata** module so that the `FraudFound_P` column of the dataset is treated as a **label**.
+7. Configure the **Edit Metadata** module so that the `FraudFound_P` column of the dataset is treated as a **label**.
 
 	![Add the label metadata to the FraudFound_P column]images/config-edit-metadata-fraudfoundp.PNG)
 
