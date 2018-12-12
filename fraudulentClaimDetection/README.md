@@ -97,7 +97,7 @@ The first step in building a classification model within AML Studio is to create
 
     _Choosing to create an empty project_
 
-1. In the "New project" dialog, name the project **Fraudulent Claim detection** and click **Ok**.
+1. In the "New project" dialog, name the project **Fraudulent Claim Detection** and click **Ok**.
 
 	![Creating an AML Studio project](images/portal-create-project.PNG)
 
@@ -112,13 +112,13 @@ In this exercise, you will upload the claims dataset of the Insurance Company. T
   
 1. Click **Datasets** to add or inspect the datasets at hand.
 
-	![Accessing Datasets](images/click-dataset.PNG)
+	![Accessing Datasets](images/click-datasets.PNG)
 
     _Accessing Datasets_ 
  
 1. Click **New** >> **Dataset** >> **From Local File**.
 
-	![Creating a new resource](images/click-new.png)
+	![Creating a new resource](images/click-new.PNG)
 
     _Creating a new resource_ 
     
