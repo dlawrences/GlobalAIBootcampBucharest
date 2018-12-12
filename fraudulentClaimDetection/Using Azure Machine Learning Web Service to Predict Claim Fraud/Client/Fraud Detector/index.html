@@ -1,0 +1,35 @@
+<!DOCTYPE html />
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Fraud Detector</title>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+    <script src="predict.js"></script>
+</head>
+
+<body>
+    <form>
+
+        <img src="assets/images/header.png"/>
+        <h1>Hello fellow <strong>Fraud Detector</strong></h1>
+        <div>Use your custom <a target="_new" href="#">Microsoft Azure Machine Learning Web Service</a> to analyze and predict if claims may be fraudulent.</div>
+
+        <div class="stepLabel">step one</div>
+        <div><strong>Browse (...)</strong> to find a dataset on your local file system.</div>
+        <input type="button" id="select_button" value="..." />
+
+        <div id="previewData"></div>
+        <div id="analysisResults"></div>
+        <div class="stepLabel">step two</div>
+        <div>Click <strong>Predict</strong> to view model predictions.</div>
+        <input disabled=true type="button" id="analyze_button" value="Predict" />
+        <div id="viewResults"></div>
+        
+    </form>
+</body>
+
+</html>
