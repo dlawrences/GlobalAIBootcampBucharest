@@ -7,4 +7,6 @@ During these workshops you have the chance to get your hands dirty so that by th
 
 * _Workshop #2_ __Fraudulent Claim Detection in Insurance Using Azure Machine Learning Studio__ by __Laurentiu Diaconu__ Data Scientist, Softelligence
 
+__Feedback:__ how did we do? Fill in the survey to let us know: https://www.surveymonkey.com/r/FZMVSPB 
+
 For questions please reach out to marketing@softelligence.net
