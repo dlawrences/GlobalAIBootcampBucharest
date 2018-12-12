@@ -1,7 +1,7 @@
 $(function () {
 
-    var url = "";
-    var predictionKey = "";
+    var url = "<Copy Prediction URL Here>";
+    var predictionKey = "<Copy API Key Here>";
     
     var fs = require("fs");
     var _ = require('underscore');
@@ -99,13 +99,13 @@ $(function () {
             predictionResults = data.Results.output1.value.Values;
 
             var htmlObject = '';
-            var htmlHeader = '<table><tr><th>Policy Number</th><th>Fraudulent?</th><th>Probability</th></tr>'
+            var htmlHeader = '<table border=1><tr><th>Policy Number</th><th>Fraudulent?</th><th>Probability</th></tr>';
 
             htmlObject = htmlObject + htmlHeader;
             
             for (var item of predictionResults) {
                 htmlObject = (item[1] == "1") ? htmlObject + '<tr class="fraud"><td>' + item[0] +'</td><td>Yes</td>' : htmlObject + '<tr class="nofraud"><td>' + item[0] + '</td><td>No</td>';
-                htmlObject = htmlObject + '<td>' + item[2] + '</td></tr>'
+                htmlObject = htmlObject + '<td>' + (parseFloat(item[2])*100).toFixed(2) + ' %</td></tr>';
             }
 
             htmlObject = htmlObject + '</table>';

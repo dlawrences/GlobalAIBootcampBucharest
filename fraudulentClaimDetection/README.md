@@ -69,8 +69,9 @@ This hands-on lab includes the following exercises:
 - [Exercise 2: Upload training dataset](#Exercise2)
 - [Exercise 3: Train the Classification model in an AML Studio Experiment](#Exercise3)
 - [Exercise 4: Evaluate the model and increase performance](#Exercise4)
-- [Exercise 5: Create a Node.js app that uses the model](#Exercise5)
-- [Exercise 6: Use the app to classify new claims](#Exercise6)
+- [Exercise 5: Create a Predictive Experiment and Deploy a ML Web Service](#Exercise5)
+- [Exercise 6: Create a Node.JS app to consume the Web Service](#Exercise6)
+- [Exercise 7: Use the app to classify new claims](#Exercise7)
 
 Estimated time to complete this lab: **45** minutes.
 
@@ -149,53 +150,291 @@ In this exercise, you will upload the claims dataset of the Insurance Company. T
 With the dataset uploaded and attached to the project, you are ready to create your experiment and train your own Classification model. Onto the next exercise!
 
 <a name="Exercise3"></a>
-## Exercise 3: Train the model ##
+## Exercise 3: Train the Classification model in an AML Studio Experiment ##
 
-In this exercise, you will train the model using the images uploaded and tagged in the previous exercise. Training can be accomplished with a simple button click in the portal, or by calling the [TrainProject](https://southcentralus.dev.cognitive.microsoft.com/docs/services/d9a10a4a5f8549599f1ecafc435119fa/operations/58d5835bc8cb231380095bed) method in the [Custom Vision Training API](https://southcentralus.dev.cognitive.microsoft.com/docs/services/d9a10a4a5f8549599f1ecafc435119fa/operations/58d5835bc8cb231380095be3). Once trained, a model can be refined by uploading additional tagged images and retraining it.
+In this exercise, you will create an experiment in which you will train a Classification model (Boosted Decision Tree) using the **Fraudulent Claims Dataset** you have uploaded in the portal.
  
-1. Click the **Train** button at the top of the page to train the model. Each time you train the model, a new iteration is created. The Custom Vision Service maintains several iterations, allowing you to compare your progress over time.
+1. Click **New** >> **Experiment** >> **Blank Experiment**.
 
-	![Training the model](images/portal-click-train.png)
+	![Creating a new blank experiment](images/new-blank-experiment.PNG)
 
-    _Training the model_
+    _Creating a new blank experiment_ 
 
-1. Wait for the training process to complete. (It should only take a few seconds.) Then review the training statistics presented to you for iteration 1. 
+2. Name the experiment to **Fraudulent Claim Detection Experiment** on the experiment canvas.
 
-    **Precision** and **recall** are separate but related  measures of the model's accuracy. You can learn more about precision and recall from https://en.wikipedia.org/wiki/Precision_and_recall.
+	![Renaming the experiment](images/experiment-canvas.PNG)
 
-	![Results of training the model](images/portal-train-complete.png)
+    _Renaming the experiment_ 
+	
+3. Drag and drop the **Fraudulent Claims Dataset** dataset on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Saved Datasets** >> **My Datasets**.
 
-    _Results of training the model_ 
+	![Searching the dataset and adding it to the canvas](images/drag-dataset.PNG)
 
-Now let's test the model using the portal's Quick Test feature, which allows you to submit images to the model and see how it classifies them using the knowledge gained from the training images.
+    _Searching the dataset and adding it to the canvas_
+	
+4. Drag and drop the **Edit Metadata** module on the experiment canvas by searching for its name in the module search bar on the left hand site or manually finding it under **Data Transformation** >> **Manipulation**.
+	
+5. Click the _output port_ of the **Fraudulent Claims Dataset** module and connect it to the _input port_ of the **Edit Metadata** module by _dragging and dropping_.
+
+	![Add the Edit Metadata module and connect modules](images/edit-metadata-connect.PNG)
+
+    _Add the Edit Metadata module and connect modules_
+	
+6. Inspect the properties of newly added **Edit Metadata** module by clicking it and going through the right-hand site.
+
+	![Inspecting Edit Metadata Properties](images/edit-metadata-properties.PNG)
+
+    _Inspecting Edit Metadata Properties_
+	
+* `Selected columns`: interactive column selector which gets its data source from the previous connected module;
+* `Data type`: columns which have been chosen in this module will been converted to the **option** selected from this list (**Unchanged** means no data type conversion occurs);
+* `Categorical`: columns which have been chosen in this module will be converted to categorical features, meaning all operations which happen on categorical features will work and columns will be interpreted as such by the models (e.g. **One Hot Encoding**);
+* `Fields`: use this option if you want to change the way that Azure Machine Learning uses the data in a model
+	* **Feature**: Use this option to flag a column as a feature, for use with modules that operate only on feature columns. By default, all columns are initially treated as features.
+
+	* **Label**: Use this option to mark the label (also known as the predictable attribute, or target variable). Many modules requires that at least one (and only one) label column be present in the dataset.
+	
+		In many cases, Azure Machine Learning can infer that a column contains a class label, but by setting this metadata you can ensure that the column is identified correctly. Setting this option does not change data values, only the way that some machine learning algorithms handle the data.
+
+	* **Weight**: Use this option with numeric data to indicate that column values represents weights for use in machine learning scoring or training operations. Only one weight column can be present in a dataset, and the column must be numeric.
+	
+	* **Clear feature**: Use this option to remove the feature flag
+	
+	* **Clear label**: Use this option to remove the **label** metadata from the specified column
+	
+	* **Clear score**: Use this option to remove the **score** metadata from the specified column
+	
+	* **Clear weight**: Use this option to remove the **weight** metadata from the specified column
+	
+* `New column names`: type the new name of the selected column or columns
+
+7. Configure the **Edit Metadata** module so that the `FraudFound_P` column of the dataset is treated as a **label**.
+
+	![Add the label metadata to the FraudFound_P column](images/config-edit-metadata-fraudfoundp.PNG)
+
+    _Add the **label** metadata to the FraudFound_P column_
+	
+8. Add a new **Edit Metadata** module which will **_Make categorical_** all columns in the dataset, excluding `Age`, `Deductible`, `Year`. Connect this to the output module of the previous **Edit Metadata** module.
+
+	![Choose columns which will be transformed to categorical](images/exclude-columns-metadata.PNG)
+
+    _Choose columns which will be transformed to categorical_
+	
+	![Configure the categorical setting](images/exclude-make-categorical.PNG)
+
+    _Configure the categorical setting_
+	
+9. Add a new **Edit Metadata** module which will **_clear the feature_** from the `PolicyNumber` column in the dataset. Connect the _input port_ of this to the _output port_ of the previous **Edit Metadata** module.
+
+* _Note_: The classification model does not need to consider this a feature as it will learn the results by **PolicyNumber**, which will mean that for any new policy, it will not know the result.
+
+10. Up until this point, your experiment canvas should look like this. Consider running the experiment by clicking **Run** from the action bar at the bottom of the screen.
+
+	![Experiment canvas before running](images/canvas-beforesplit-norun.PNG)
+
+    _Experiment canvas before running_
+	
+	![Experiment canvas after split](images/canvas-beforesplit-run.PNG)
+
+    _Experiment canvas after running_
+
+* _Note_: To consider an experiment run successful, all the modules need to be labelled with the **green check mark**.
+
+11. In order to visualize our results, we can open the dataset which has gone through all these transformations by clicking on the _output port_ of the last added **Edit Metadata** module and choose _Visualize_. The AML Studio will open a pop-up window showing the resulting dataset in a tabular format.
+
+	![Choose to visualize results](images/click-visualize.PNG)
+
+    _Choose to visualize results_
+	
+	![Visualize results](images/visualize-results.PNG)
+
+    _Visualize results_
+	
+* _Note_: The `FraudFound_P` column is a **_categorical label_**. We can tell from the column chart that 94% of the claims are not fraudulent (`FraudFound_P = 0`), whilst the other 6% are labelled as fraudulent (`FraudFound_P = 1`). This is an **unbalanced** dataset and it may pose problems later on, meaning that the classification model may easily **bias** to the class with the most samples, disregarding the other one.
+
+12. In order to prevent the **class bias** to non-fraudulent claims, add the **SMOTE** module to the canvas and connect its _input port_ to the _output port_ of the previously added module. Configure it to use _All labels_ as **selected columns** and a value of _1450_ for **SMOTE Percentage**. Do define a **random seed** different from _0_ so that multiple runs will start from the same scenario.
+
+* _Note_: **SMOTE** stands for _Synthetic Minority Oversampling Technique_. This is a statistical technique for increasing the number of cases in your dataset in a balanced way. The module works by generating new instances from existing minority cases that you supply as input. This implementation of SMOTE does not change the number of majority cases.
+
+	![SMOTE Module Configuration](images/smote-config.PNG)
+
+    _**SMOTE** Module Configuration_
+
+13. After running the experiment with the fresh new **SMOTE** Module added to the canvas, we can tell that the classes are now balanced are ready for training.
+
+	![Class distribution after SMOTE](images/balanced-classes.PNG)
+
+    _Class distribution after **SMOTE**_
+
+
+14. To prepare for the modelling, the dataset needs to be split in two batches: **training** and **testing**.
+
+* **Training batch**: The batch of data which will be used by the model to learn the relationships and rules between the independent variables (called _features_) and the dependent variable (called _label_);
+* **Testing batch**: The batch of data which will be used to proof the model determined during the learning phase.
+
+	_Note_: Usually, the **training** batch contains most of the data in the entire dataset so the model has as much data as it needs and as it diverse as possible to be able to infer all the dependencies possible (_or at least the most important of them_). However, the **training** and **testing** dataset need to be similar as possible to the algorithm won't be **overfitted**/**underfitted**.
+
+	To split the data in AML Studio, add to the experiment canvas the **Split Data** module and connect its _input port_ to the _output port_ of the previous module. Configure it to pass *80%* of the data through the first _output port_ (left most one) after a **randomized and stratified split**, using the `FraudFound_P` **stratification key column**.
+
+	![Splitting the dataset](images/split-data-config.PNG)
+
+    _Splitting the dataset_
+
+15. After running the experiment again, we can inspect the results in both _output ports_, the left one containing _80%_ of the data, whilst the right one contains _the rest_.
+
+16. We are now ready to train our decision tree. In order to do this, drag to the experiment canvas the following two modules:
+
+* **Two-Class Boosted Decision Tree**: this is the module containing the model initial rules which will be trained and adjusted for this dataset;
+* **Train Model**: this is the module at hand to train a _supervised model_ in AML Studio.
+
+17. Connect the left _output port_ of the **Split Data** module to the right _input port_ of the **Train Model** module and the single _output port_ of the **Two-Class Boosted Decision Tree** module as such:
+
+	![Configuration for model training](images/training-canvas-config.PNG)
+
+    _Configuration for model training_
+
+18. Click on the **Train Model** module and select the `FraudFound_P` column as the _label column_.
+
+19. Click run.
+
+20. After the training run has finished, you are able to access in the **Visualize** option of the **Train Model** module _output port_ the **_trees_** which have been built for your **training** dataset.
+
+21. Inspect the **_decision trees_** which have been built for your data. Each node is part of a series of decisions which lead to a result: **1** - _fraudulent_ or **0** - _non-fraudulent_.
 
 <a name="Exercise4"></a>
-## Exercise 4: Test the model ##
+## Exercise 4: Evaluate the model and increase performance ##
 
-In [Exercise 5](#Exercise5), you will create a Node.js app that uses the model to identify the correct BMW model in images presented to it. But you don't have to write an app to test the model; you can do your testing in the portal, and you can further refine the model using the images that you test with. In this exercise, you will test the model's ability to identify the BMW model using test images provided for you.
+1. Now that the model has been trained, in order to evaluate its performance, we have to test it against the **testing** batch and aggregate results. In order to do that, drag and drop the **Score Model** module to the canvas and connect:
+* its _left most input port_ to the _output port_ of the **Train Model** module added previously;
+* its _right most input port_ to the _right most output port_ of the **Split Data** module added previously.
 
-1. Click **Quick Test** at the top of the page.
- 
-	![Testing the model](images/portal-click-quick-test.png)
+	![Scoring the model](images/score-model-config.PNG)
 
-    _Testing the model_ 
+    _Scoring the model_
+	
+	This module will **predict** the _label_ of the data included in the **_testing batch_**. A **prediction** may present an error or it may be accurate (we can determine this as we already have the _label_ of the data in the **_testing batch_**).
 
-1. Click **Browse local files**, and then browse to the `resources\images\bmw_cars\test` folder in the lab resources. Select any image, and click **Open**.
+2. After **running**, the output of the module presents _two new columns_ in our case:
+* **Scored Labels**: the label which the model has **predicted** for the claim, on a row by row basis;
+* **Scored Probabilities**: the probability determined by the model when **predicting** the label.
 
-	![Selecting a test image](images/portal-select-test-01.png)
+	![Model results](images/score-model-results.PNG)
 
-    _Selecting a test image_ 
+    _Model results_
+	
+	As you can tell from the image above, the distribution in **groups** looks rather similar to the initial case, however in order to proof the algorithm some **_indicators_** have to be calculated.
+	
+3. In order to evaluate the model performance, drag and drop the **Evaluate Model** module on the canvas and connect its _left most input port_ to the _output port_ of the **Score Model** module and then run the experiment once again.
 
-1. Examine the results of the test in the "Quick Test" dialog. What is the probability that the car is an E60 or another model?
+	![Model results](images/eval-model-config.PNG)
 
-1. Try a couple more test images and examine the results. How is the model performing? Any ideas on how we might improve such a model?
+    _Setting up the model evaluation_
+	
+4. After the experiment run has completed, you are able to view the results of the **Evaluate Model** module by clicking its _output port_ and then **Visualize**.
 
-Now let's go a step further and incorporate the model's intelligence into an app.
+	![Model results](images/eval-model-results.PNG)
+
+    _Setting up the model evaluation_
+	
+5. The **Evaluate Model** results state that the **_Positive Label_** is equal to **_1_** and that the **_Negative Label_** is equal to **_0_**. This means that a positive event is considered a **fraud** and the other one a **non-fraudulent claim**. All set and go:
+
+* **_True Positive_**: The number of testing claims which have been labelled as _fraudulent_ and **predicted** by the model as **_fraudulent_** as well;
+* **_True Negative_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_non-fraudulent_** as well;
+* **_False Negative_**: The number of testing claims which have been labelled as _fraudulent_ and **predicted** by the model as **_non-fraudulent_**;
+* **_False Positive_**: The number of testing claims which have been labelled as _non-fraudulent_ and **predicted** by the model as **_fraudulent_**.
+
+	These measures are really important in determining how well the model predicting is whether a claim is **_fraudulent_** or **_not_**.
+	
+* **_Accuracy_**: The ratio of correctly predicted observations or equal to `(TP + TN)/(TP + TN + FP + FN)`
+* **_Recall_**: The ratio of correctly predicted positive events or equal to  `TP / (TP + FN)`. It is also known as **sensitivity** or **true positive rate**.
+
+* **_Precision_**: The ratio of correct positive observations or equal to `TP / (TP + FP)`.
+
+	Both precision and recall work well if there’s an uneven class distribution as is often the case. They both focus on the performance of positives rather than negatives, which is why it’s important to correctly assign the “positive” predicate to the value of most interest (in our case the **fraudulent** claims).
+	
+	The precision measure shows what percentage of positive predictions where correct, whereas recall measures what percentage of positive events were correctly predicted. To put it in a different way: precision is a measure of how good predictions are with regard to false positives, whereas recall is measures how good the predictions are with regard to false negatives. Whichever type of error is more important – or costs more - is the one that should receive most attention.
+	
+	And for our Insurance Company, the cost is **way higher** to not determine before-hand if a claim is **_fraudulent_** versus raising a **_false alarm_** (predicting that a claim may be **_fraudulent_** and turning out it is not).
+	
+	![Precision vs Recall](images/precision_recall.png)
+
+    _Precision vs Recall_
 
 <a name="Exercise5"></a>
-## Exercise 5: Create a Node.js app that uses the model ##
+## Exercise 5: Create a Predictive Experiment and Deploy a ML Web Service ##
 
-The true power of the Microsoft Custom Vision Service is the ease with which developers can incorporate its intelligence into their own applications using the [Custom Vision Prediction API](https://southcentralus.dev.cognitive.microsoft.com/docs/services/eb68250e4e954d9bae0c2650db79c653/operations/58acd3c1ef062f0344a42814). In this exercise, you will use Visual Studio Code to modify an app to use the model you built and trained in previous exercises.
+The true power of the AML Studio is the ease with which developers can incorporate its intelligence into their own applications using the Predictive Experiments and the Machine Learning Web Services.In this exercise, you will use create a Predictive Experiment which will be deployed as a Web Service. This Web Service is going to be used when **predicting** the label for **_new claims_**.
+
+1. Before going further, **save** your current experiment by hitting **Save** in the bottom part of the portal and then **run** the experiment once again.
+
+2. Once the experiment run has completed, click **Set Up Web Service** in the bottom part of the portal and choose **Predictive Web Service [Recommended]**.
+
+	![Set up Predictive Experiment](images/set-up-ws.png)
+
+    _Set up Predictive Experiment_
+
+3. AML Studio reorganizes your **Training experiment** into a **Predictive experiment**, saving the trained model and defining a **Web service input** and a **Web service output**.
+
+	![Initial Predictive Experiment](images/predictive_exp_initial.PNG)
+
+    _Initial Predictive Experiment_
+	
+4. In order to be able to use this properly, we have to drop/add some other modules. First, drop the **Edit Metadata** module which changes the column `FraudFound_P` to be interpreted during the experiment as a _label_.
+
+	![Drop Edit Metadata for label](images/predictive_exp_drop_meta_label.PNG)
+
+    _Drop Edit Metadata for label_
+	
+5. Add to the canvas the **Select Columns in Dataset** module and connect its _input port_ to the _output port_ of the **Fraudulent Claims Dataset** dataset. Connect its _output port_ to the _input port_ of the closest **Edit Metadata** module (or the second one added on the canvas during the creation of the **Training experiment**).
+
+6. Configure the **Select Columns in Dataset** to begin with **All Columns** and exclude the `FraudFound_P` attribute.
+
+	![Exclude the FraudFound_P label](images/select_columns_exclude.PNG)
+
+    _Exclude the FraudFound_P label_
+
+_Note_: This operation needs to be done as the **Web Service** will get as input claims which have not been labelled before-hand for prediction.
+
+7. Connect the _output port_ of the **Web Service Input** module to the _input port_ of the **Edit Metadata** module to which the **Select Columns in Dataset** is also connected. It should look like this:
+
+	![Fixing the input of the Predictive Experiment](images/predictive_exp_input.PNG)
+
+    _Fixing the input of the Predictive Experiment_
+	
+8. Remove the **SMOTE** module as no oversampling needs to be done from this point onwards and connect the **Edit Metadata** module previously connected to it to the **Score Model** following this.
+
+9. Add a new **Select Columns in Dataset** Module between the **Score Model** module and the **Web Service Output** module and choose the following columns: `PolicyNumber, Scored Labels, Scored Probabilities`.
+
+	![Fixing the output of the Predictive Experiment Experiment](images/predictive_exp_ready.PNG)
+
+    _Fixing the output of the Predictive Experiment_
+	
+	![Defining the Web Service output columns](images/output_select_columns.PNG)
+
+    _Defining the Web Service output columns_
+
+10. **Run** the **Predictive Experiment** once ready.
+
+11. Once the experiment run has completed, click **Deploy Web Service** and choose 
+**Deploy Web Service [Classic]**.
+
+	![Deploying the Machine Learning Web Service](images/deploy_ws_classic.png)
+
+    _Deploying the Machine Learning Web Service_
+	
+12. Once deployed, the portal will redirect you to the page where you may find different details about your newly deployed **Web Service**:
+
+* **API Key**: To be used for API Calls
+* **Request/Response**: REST API Endpoint, examples
+* **Test**: Web pop-up in which you can provide the Web Service Input and receive directly the output, **no code required**
+* **Apps**: Pre-built excel files in which you can consume the Web Service, **no code required**
+
+	![Viewing the Web Service Details](images/web-service-portal.PNG)
+
+    _Viewing the Web Service Details_
+
+<a name="Exercise6"></a>
+## Exercise 6: Create a Node.JS app to consume the Web Service ##
 
 1. If Node.js isn't installed on your system, go to https://nodejs.org and install the latest LTS version for your operating system.
 
@@ -203,9 +442,9 @@ The true power of the Microsoft Custom Vision Service is the ease with which dev
 
 1. If Visual Studio Code isn't installed on your workstation, go to http://code.visualstudio.com and install it now.
 
-1. Start Visual Studio Code and select **Open Folder...** from the **File** menu. In the ensuing dialog, select the `resources\clientapp` folder included in the lab resources.
+1. Start Visual Studio Code and select **Open Folder...** from the **File** menu. In the ensuing dialog, select the `Using Azure Machine Learning Web Service to Predict Claim Fraud/Client/Fraud Detector/` folder included in the lab resources.
 
-	![Selecting the client app folder](images/fe-select-folder.png)
+	![Selecting the client app folder](images/open-clientapp-vscode.PNG)
 
     _Selecting the client app folder_ 
 
@@ -215,111 +454,109 @@ The true power of the Microsoft Custom Vision Service is the ease with which dev
 	npm install
 	```
 
-1. Return to the BMW Cars project in the Custom Vision Service portal, click **Performance**, and then click **Make default** to make sure the latest iteration of the model is the default iteration. 
+1. Before you can run the app and use it to call the Custom Vision Service, it must be modified to include endpoint and authorization information. To that end, go back to the Web Service Portal and open in a new window the **Request/Response** hyperlink.
 
-	![Specifying the default iteration](images/portal-make-default.png)
 
-    _Specifying the default iteration_ 
+1. Here you may find a **Request URI** which needs to be provided to the application. To do that, copy the URI:
 
-1. Before you can run the app and use it to call the Custom Vision Service, it must be modified to include endpoint and authorization information. To that end, click **Prediction URL**.
-
-	![Viewing Prediction URL information](images/portal-prediction-url.png)
-
-    _Viewing Prediction URL information_ 
-
-1. The ensuing dialog lists two URLs: one for uploading images via URL, and another for uploading local images. Copy the Prediction API URL for image files to the clipboard. 
-
-	![Copying the Prediction API URL](images/copy-prediction-url.png)
+	![Copying the Prediction API URL](images/copy-request-uri.PNG)
 
     _Copying the Prediction API URL_ 
 
 1. Return to Visual Studio Code and click **predict.js** to open it in the code editor.
 
-	![Opening predict.js](images/vs-predict-file.png)
+	![Opening predict.js](images/open-predictjs.PNG)
 
     _Opening predict.js_ 
 
-1. Replace `<Custom Vision Prediction URI>` with the URL on the clipboard.
+1. Replace `<Copy Prediction URL Here>` with the URL on the clipboard.
 
     ```js
-    // Replace <Custom Vision Prediction URI> with your valid Prediction URI for Custom Vision.
-    const predictionUri = '<Custom Vision Prediction URI>';
+    // Replace <Copy Prediction URL Here> with your valid Prediction URI for the AML Web Service.
+    var url = "<Copy Prediction URL Here>";
     ```
 
-1. Return to the Custom Vision Service portal and copy the Prediction API key to the clipboard. 
+1. Return to the initial Web Service portal and copy the API API key to the clipboard. 
 
-	![Copying the Prediction API key](images/copy-prediction-key.png)
+	![Copying the Prediction API key](images/copy-apikey.png)
 
     _Copying the Prediction API key_ 
 
-1. Return to Visual Studio Code and replace `<Prediction Key>` with the API key on the clipboard.
+1. Return to Visual Studio Code and replace `<Copy API Key Here>` with the API key on the clipboard.
 
     ```js
-    // Replace <Prediction Key> with your valid prediction key.
-    const predictionKey = '<Prediction Key>';
+    // Replace <Copy API Key Here> with your valid prediction key.
+    var predictionKey = "<Copy API Key Here>";
     ```
 
-1. Scroll down in **predict.js** and examine the block of code that begins on line 34. This is the code that calls out to the Custom Vision Service using AJAX. Using the Custom Vision Prediction API is as easy as making a simple, authenticated POST to a REST endpoint.
+1. Scroll down in **predict.js** and examine the block of code that begins on line 88. This is the code that calls out to the AML Web Service using AJAX. Using the AML Web Service API is as easy as making a simple, authenticated POST to a REST endpoint.
 
     ```js
         $.ajax({
             type: "POST",
-            url: predictionUri,
-            data: imageBytes,
-            processData: false,
+            url: url,
+            data: JSON.stringify(jsonBody),
             headers: {
-                "Prediction-Key": predictionKey,
-                "Content-Type": "multipart/form-data"
+                "Authorization": "Bearer " + predictionKey,
+                "Content-Type": "application/json"
             }
         }).done(function (data) {
+            fs.writeFileSync("./logs/serviceResponse.txt", JSON.stringify(data));
 
-            var predictions = data.predictions;
+            predictionResults = data.Results.output1.value.Values;
             ...
     ```
 
-    _Making a call to the Prediction API_ 
+    _Making a call to the AML Web Service API_ 
 
 1. Return to the integrated terminal in Visual Studio Code and execute the following command to start the app:
 
 	```
 	npm start
 	```
+	
+	![Using the Fraud Detector App](images/fraud-detector-main.PNG)
+
+    _Using the Fraud Detector App_ 
 
 
-The client app is a cross-platform app written with Node.js and [Electron](https://electron.atom.io/). As such, it is equally capable of running on Windows, macOS, and Linux. In the next exercise, you will use it to classify images of BMW cars and display them.
+The client app is a cross-platform app written with Node.js and [Electron](https://electron.atom.io/). As such, it is equally capable of running on Windows, macOS, and Linux. In the next exercise, you will use it to classifiy new claims and display their results.
 
-<a name="Exercise6"></a>
-## Exercise 6: Use the app to classify images ##
+<a name="Exercise7"></a>
+## Exercise 7: Use the app to classify new claims ##
 
-In this exercise, you will use the app to submit images to the Custom Vision Service for classification. The app uses the JSON information returned from calls to the Custom Vision Prediction API's [PredictImage](https://southcentralus.dev.cognitive.microsoft.com/docs/services/eb68250e4e954d9bae0c2650db79c653/operations/58acd3c1ef062f0344a42814) method to tell you what type of BMW model the picture contains. It also shows the probability that the classification assigned to the image is correct.
+In this exercise, you will use the app to submit claims to the AML Web Service for classification. The app uses the JSON information returned from calls to the Web Service to tell you if the claims are fraudulent or not. It also shows the probability that the classification assigned to each claim is correct.
 
 1. Click the **Browse (...)** button in the  app. 
 
-1. Browse to the `tests` folder in the lab resources. Select any image file and then click **Open**.
+1. Browse to the `Using Azure Machine Learning Web Service to Predict Claim Fraud\Client\Fraud Detector\data` folder in the lab resources. Select the file in there and then click **Open**.
 
-1. Click the **Predict** button to submit the image to the Custom Vision Service.
+1. The application feeds back telling you the number of valid claims which have been loaded.
 
-	![Submitting the image to the Custom Vision Service](images/app-click-predict.png)
+	![Number of claims provided](images/number-claims.PNG)
 
-    _Submitting the image to the Custom Vision Service_ 
+    _Number of claims provided_ 
 
-1. Check that the app identifies the image as a specific BMW model. Is that the correct model of the car?
+
+1. Click the **Predict** button to submit the collection of claims to the Web Service.
  
-1. Repeat steps 1 through 4 for a random image (not containing any car) and confirm that the app does **not** classify the image as any known BMW model.
+1. The Web Service includes in its response a **class label** and a **prediction probability** which is shown by the Client App in a tabular format:
 
-	![Submitting the image to the Custom Vision Service](images/app-click-predict-unknown.png)
+	![Viewing the results of the REST API Call](images/api-call-results.PNG)
 
-    _Submitting a non-car image to the Custom Vision Service_ 
+    _Viewing the results of the REST API Call_ 
 
-1. As you can see, using the Prediction API from an app is just as reliable as through the Custom Vision Service portal — and way more fun! What's more, if you go to the Predictions page in the portal, you'll find that each of the images uploaded via the app is shown there as well.
+1. As you can see, using the Prediction API from an app is just as reliable as through the AML Web Service portal — and way more fun!
  
-Feel free to test with more images of your own and gauge the model's adeptness at identifying the right BMW model. And remember that in general, the more images you train with, the smarter the model will be.
+Feel free to test with more cases of claims of your own and put to test the ability of the model of identifying the fraudulent claims. And remember that in general, the more claims you train with, the smarter the model will be.
 
 <a name="Summary"></a>
 ## Summary ##
 
-Image classification is playing an increasingly large role in industry as a means for automating such tasks as checking images uploaded to Web sites for offensive content and inspecting parts rolling off of assembly lines for defects. Building an image-classification model manually — that is, coding it from the ground up in Python, R, or another language — requires no small amount of expertise, but the Custom Vision Service enables virtually anyone to build sophisticated image-classification models. And once a model is built and trained, an app that uses it is only few lines of code away.
+Fraud classification/detection is a key endeavour to be tackled by Financial Services companies in their search of managing risks better and in a timely manner. This use-case can work at its best when coupled with a Custom Vision scenario in which the claim details (parts which have been damaged, severity and other information) are automatically determined by such a model and fed to a Fraud Detection model afterwards.
+
+However, as companies own such siloed data already, this can be trained really quickly and made available to production systems!
 
 ---
 
-Copyright 2018 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.
+Copyright 2018 Softelligence. All rights reserved.
