@@ -212,11 +212,8 @@ In this exercise, you will create an experiment in which you will train a Classi
 	![Add the label metadata to the FraudFound_P column](images/config-edit-metadata-fraudfoundp.PNG)
 
     _Add the **label** metadata to the FraudFound_P column_
-
-<a name="Exercise4"></a>
-## Exercise 4: Test the model ##
-
-8. Add a new **Edit Metadata** module which will **_Make categorical_** all columns in the dataset, excluding `Age`, `Deductible`, `Year`. Connect this to the output module of the previous 
+	
+8. Add a new **Edit Metadata** module which will **_Make categorical_** all columns in the dataset, excluding `Age`, `Deductible`, `Year`. Connect this to the output module of the previous **Edit Metadata** module.
 
 	![Choose columns which will be transformed to categorical](images/exclude-columns-metadata.PNG)
 
@@ -225,6 +222,21 @@ In this exercise, you will create an experiment in which you will train a Classi
 	![Configure the categorical setting](images/exclude-make-categorical.PNG)
 
     _Configure the categorical setting_
+	
+9. Add a new **Edit Metadata** module which will **_clear the feature_** from the `PolicyNumber` column in the dataset. Connect the _input port_ of this to the _output port_ of the previous **Edit Metadata** module.
+
+* _Note_: The classification model does not need to consider this a feature as it will learn the results by **PolicyNumber**, which will mean that for any new policy, it will not know the result.
+
+10. Up until this point, your experiment canvas should look like this. Consider running the experiment by clicking **Run** from the action bar at the bottom of the screen.
+
+	![Experiment canvas before split](images/canvas-beforesplit-norun.PNG)
+
+    _Experiment canvas before split_
+
+11. 
+
+<a name="Exercise4"></a>
+## Exercise 4: Test the model ##
 
 In [Exercise 5](#Exercise5), you will create a Node.js app that uses the model to identify the correct BMW model in images presented to it. But you don't have to write an app to test the model; you can do your testing in the portal, and you can further refine the model using the images that you test with. In this exercise, you will test the model's ability to identify the BMW model using test images provided for you.
 
