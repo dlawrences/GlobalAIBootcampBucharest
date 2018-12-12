@@ -555,7 +555,7 @@ Feel free to test with more cases of claims of your own and put to test the abil
 
 Fraud classification/detection is a key endeavour to be tackled by Financial Services companies in their search of managing risks better and in a timely manner. This use-case can work at its best when coupled with a Custom Vision scenario in which the claim details (parts which have been damaged, severity and other information) are automatically determined by such a model and fed to a Fraud Detection model afterwards.
 
-However, as companies such siloed data already, this can be implemented really quickly and made available to production systems!
+However, as companies own such siloed data already, this can be trained really quickly and made available to production systems!
 
 ---
 
