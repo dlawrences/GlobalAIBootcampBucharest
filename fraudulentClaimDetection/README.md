@@ -229,11 +229,25 @@ In this exercise, you will create an experiment in which you will train a Classi
 
 10. Up until this point, your experiment canvas should look like this. Consider running the experiment by clicking **Run** from the action bar at the bottom of the screen.
 
-	![Experiment canvas before split](images/canvas-beforesplit-norun.PNG)
+	![Experiment canvas before running](images/canvas-beforesplit-norun.PNG)
 
-    _Experiment canvas before split_
+    _Experiment canvas before running_
+	
+	![Experiment canvas after split](images/canvas-beforesplit-run.PNG)
 
-11. 
+    _Experiment canvas after running_
+
+* _Note_: To consider an experiment run successful, all the modules need to be labelled with the **green check mark**.
+
+11. In order to visualize our results, we can open the dataset which has gone through all these transformations by clicking on the _output port_ of the last added **Edit Metadata** module and choose _Visualize_. The AML Studio will open a pop-up window showing the resulting dataset in a tabular format.
+
+	![Choose to visualize results](images/click-visualize.PNG)
+
+    _Choose to visualize results_
+	
+	![Visualize results](images/visualize-results.PNG)
+
+    _Visualize results_
 
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
