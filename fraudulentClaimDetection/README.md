@@ -265,6 +265,41 @@ In this exercise, you will create an experiment in which you will train a Classi
 
     _Class distribution after **SMOTE**_
 
+
+14. To prepare for the modelling, the dataset needs to be split in two batches: **training** and **testing**.
+
+* **Training batch**: The batch of data which will be used by the model to learn the relationships and rules between the independent variables (called _features_) and the dependent variable (called _label_);
+* **Testing batch**: The batch of data which will be used to proof the model determined during the learning phase.
+
+	_Note_: Usually, the **training** batch contains most of the data in the entire dataset so the model has as much data as it needs and as it diverse as possible to be able to infer all the dependencies possible (_or at least the most important of them_). However, the **training** and **testing** dataset need to be similar as possible to the algorithm won't be **overfitted**/**underfitted**.
+
+	To split the data in AML Studio, add to the experiment canvas the **Split Data** module and connect its _input port_ to the _output port_ of the previous module. Configure it to pass *80%* of the data through the first _output port_ (left most one) after a **randomized and stratified split**, using the `FraudFound_P` **stratification key column**.
+
+	![Splitting the dataset](images/split-data-config.PNG)
+
+    _Splitting the dataset_
+
+15. After running the experiment again, we can inspect the results in both _output ports_, the left one containing _80%_ of the data, whilst the right one contains _the rest_.
+
+16. We are now ready to train our decision tree. In order to do this, drag to the experiment canvas the following two modules:
+
+* **Two-Class Boosted Decision Tree**: this is the module containing the model initial rules which will be trained and adjusted for this dataset;
+* **Train Model**: this is the module at hand to train a _supervised model_ in AML Studio.
+
+17. Connect the left _output port_ of the **Split Data** module to the right _input port_ of the **Train Model** module and the single _output port_ of the **Two-Class Boosted Decision Tree** module as such:
+
+	![Configuration for model training](images/training-canvas-config.PNG)
+
+    _Configuration for model training_
+
+18. Click on the **Train Model** module and select the `FraudFound_P` column as the _label column_.
+
+19. Click run.
+
+20. After the training run has finished, you are able to access in the **Visualize** option of the **Train Model** module _output port_ the **_trees_** which have been built for your **training** dataset.
+
+21. Inspect the **_decision trees_** which have been built for your data. Each node is part of a series of decisions which lead to a result: **1** - _fraudulent_ or **0** - _non-fraudulent_.
+
 <a name="Exercise4"></a>
 ## Exercise 4: Test the model ##
 
