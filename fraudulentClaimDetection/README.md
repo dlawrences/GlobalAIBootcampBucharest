@@ -355,7 +355,7 @@ In this exercise, you will create an experiment in which you will train a Classi
 	
 	And for our Insurance Company, the cost is **way higher** to not determine before-hand if a claim is **_fraudulent_** versus raising a **_fale alarm_** (predicting that a claim may be **_fraudulent_** and turning out it is not).
 	
-	![Model results](images/precision_recall.PNG)
+	![Precision vs Recall](images/precision_recall.png)
 
     _Precision vs Recall_
 
