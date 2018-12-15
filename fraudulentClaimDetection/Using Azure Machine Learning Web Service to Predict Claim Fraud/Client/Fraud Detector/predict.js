@@ -8,9 +8,9 @@ $(function () {
 
     var Converter = require('csvtojson');
 
-    // Store the value of a selected image for display
     var fileData;
     var jsonBody;
+    var dir = './logs';
 
     // Handle clicks of the Browse (...) button
     $("#select_button").click(function () {
@@ -24,6 +24,10 @@ $(function () {
         var fileSelection = electron.remote.dialog.showOpenDialog();
 
         fileData = fs.readFileSync(fileSelection[0], { encoding : 'utf8'});
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
 
         Converter({
             noheader: false,
