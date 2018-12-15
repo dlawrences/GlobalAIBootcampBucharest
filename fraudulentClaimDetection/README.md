@@ -32,7 +32,7 @@ In this hands-on lab, you will learn how to:
 
 The following are required to complete this hands-on lab:
 
-- A Microsoft Azure Machine Learning Studio account. If you don't have one, [sign up for free](https://studio.azureml.net/) - click on "Sign up here". Please choose the **_Standard Workspace_** option when prompted.
+- A Microsoft Azure Machine Learning Studio account. If you don't have one, [sign up for free](https://studio.azureml.net/) - click on "Sign up here". Please choose the **_Free Workspace_** option when prompted.
 - Microsoft [Visual Studio Code](http://code.visualstudio.com) version 1.14.0 or higher
 - [Node.js](https://nodejs.org) version 6.0 or higher
 
@@ -73,7 +73,7 @@ This hands-on lab includes the following exercises:
 - [Exercise 6: Create a Node.JS app to consume the Web Service](#Exercise6)
 - [Exercise 7: Use the app to classify new claims](#Exercise7)
 
-Estimated time to complete this lab: **45** minutes.
+Estimated time to complete this lab: **80** minutes.
 
 <a name="Exercise1"></a>
 ## Exercise 1: Create an AML Studio project ##
