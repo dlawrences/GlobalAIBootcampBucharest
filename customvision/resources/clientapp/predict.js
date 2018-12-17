@@ -1,11 +1,10 @@
 $(function () {
 
     // Replace <Custom Vision Prediction URI> with your valid Prediction URI for Custom Vision.
-    const predictionUri = 'https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/fb551518-31ed-4046-a70b-a1489c001a60/image';
+    const predictionUri = '<Custom Vision Prediction URI>';
     // Replace <Prediction Key> with your valid prediction key.
-    const predictionKey = 'c925cd22272c4d52b7436f30f90754d6';
+    const predictionKey = '<Prediction Key>';
     
-
     
     var fs = require('fs');
     var _ = require('underscore');
